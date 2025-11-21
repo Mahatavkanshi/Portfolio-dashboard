@@ -1,7 +1,9 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import { config } from './config/environment';
+import { initDatabase } from './config/database';
 import healthRoutes from './routes/health.routes';
+import authRoutes from './routes/auth.routes';
 
 const app: Application = express();
 
@@ -12,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/health', healthRoutes);
+app.use('/api/auth', authRoutes);
 
 // Root endpoint
 app.get('/', (_req, res) => {
@@ -20,17 +23,30 @@ app.get('/', (_req, res) => {
     version: '1.0.0',
     endpoints: {
       health: '/api/health',
+      auth: '/api/auth',
     },
   });
 });
 
-// Start server
+// Initialize database and start server
 const PORT = config.port;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 Environment: ${config.nodeEnv}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
-});
+const startServer = async () => {
+  try {
+    await initDatabase();
+    
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📊 Environment: ${config.nodeEnv}`);
+      console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
+      console.log(`🔐 Auth endpoints: http://localhost:${PORT}/api/auth`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 export default app;

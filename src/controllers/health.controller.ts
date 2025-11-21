@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { HealthCheckResponse, ApiResponse } from '../types';
+import { HealthCheckResponse } from '../types';
 import healthService from '../services/health.service';
 
 export class HealthController {
@@ -11,21 +11,17 @@ export class HealthController {
     try {
       const healthCheck: HealthCheckResponse = healthService.getHealthStatus();
 
-      const response: ApiResponse<HealthCheckResponse> = {
+      return res.status(200).json({
         success: true,
         message: 'Application is healthy',
         data: healthCheck,
-      };
-
-      return res.status(200).json(response);
+      });
     } catch (error) {
-      const response: ApiResponse = {
+      return res.status(500).json({
         success: false,
         message: 'Health check failed',
         error: error instanceof Error ? error.message : 'Unknown error',
-      };
-
-      return res.status(500).json(response);
+      });
     }
   }
 
