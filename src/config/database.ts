@@ -30,8 +30,19 @@ export const initDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_login TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS query (
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(100) NOT NULL,
+      email VARCHAR(255) NOT NULL,
+      msg VARCHAR(1000) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+
     `);
     console.log('✅ Database tables initialized');
+    console.log('Query table created successfully');
   } catch (error) {
     console.error('❌ Error initializing database:', error);
     throw error;
