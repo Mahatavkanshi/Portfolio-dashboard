@@ -5,6 +5,8 @@ import { initDatabase } from './config/database';
 import healthRoutes from './routes/health.routes';
 import authRoutes from './routes/auth.routes';
 import queryRoutes from './routes/query.routes';
+import testRoutes from './routes/test.routes';
+import userRoutes from './routes/users.routes';
 const app: Application = express();
 
 // Middleware
@@ -16,6 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/query', queryRoutes);
+app.use('/api/test', testRoutes);
+app.use('/api', userRoutes);
 // Root endpoint
 app.get('/', (_req, res) => {
   res.json({

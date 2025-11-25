@@ -39,6 +39,13 @@ export class AuthModel {
     return result.rows[0];
   }
 
+   static async allUsers(): Promise<User[]> {
+    const query = 'SELECT id, username, email, created_at, last_login FROM login';
+    const result = await pool.query(query);
+    return result.rows;   
+    
+  }
+
   // Find user by username
   static async findByUsername(username: string): Promise<User | null> {
     const query = 'SELECT * FROM login WHERE username = $1';

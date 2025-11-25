@@ -13,7 +13,6 @@ export interface Query {
     created_at: Date;
 }
 
-
 export class QueryModel {
     // Save a new query
     static async saveQuery(queryData: ReceivedInput): Promise<void> {
@@ -80,4 +79,6 @@ export class QueryModel {
         const result = await pool.query(query, values);
         return (result.rowCount ?? 0) > 0;
     }
-}
+    
+
+};
