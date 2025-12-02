@@ -1,6 +1,9 @@
 import { pool } from '../config/database';
 import bcrypt from 'bcrypt';
 
+/**
+ * User interface - Database user entity
+ */
 export interface User {
   id: number;
   username: string;
@@ -10,19 +13,38 @@ export interface User {
   last_login: Date | null;
 }
 
+/**
+ * CreateUserInput - Data required for user registration
+ */
 export interface CreateUserInput {
   username: string;
   email: string;
   password: string;
 }
 
+/**
+ * LoginInput - Data required for user login
+ */
 export interface LoginInput {
   username: string;
   password: string;
 }
 
+/**
+ * AuthModel - Data access layer for authentication
+ * Following MVC architecture pattern
+ * 
+ * Responsibilities:
+ * - Direct database interactions
+ * - Data persistence and retrieval
+ * - Password hashing and verification
+ */
 export class AuthModel {
-  // Create a new user
+  /**
+   * Create a new user in the database
+   * @param userData - User data to create
+   * @returns Created user object
+   */
   static async createUser(userData: CreateUserInput): Promise<User> {
     const { username, email, password } = userData;
     

@@ -1,8 +1,22 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
 
+/**
+ * AuthController - Handles authentication-related requests
+ * Following MVC architecture pattern
+ * 
+ * Responsibilities:
+ * - Validate incoming requests
+ * - Call appropriate service methods
+ * - Return formatted responses
+ */
 export class AuthController {
-  // Register endpoint
+  /**
+   * Register a new user
+   * @route POST /api/auth/register
+   * @param req - Express request object with username, email, and password in body
+   * @param res - Express response object
+   */
   static async register(req: Request, res: Response): Promise<void> {
     try {
       const { username, email, password } = req.body;
@@ -26,7 +40,12 @@ export class AuthController {
     }
   }
 
-  // Login endpoint
+  /**
+   * Login an existing user
+   * @route POST /api/auth/login
+   * @param req - Express request object with username and password in body
+   * @param res - Express response object
+   */
   static async login(req: Request, res: Response): Promise<void> {
     try {
       const { username, password } = req.body;

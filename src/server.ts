@@ -2,11 +2,14 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import { config } from './config/environment';
 import { initDatabase } from './config/database';
+import { ViewController } from './controllers/views.controller';
 import healthRoutes from './routes/health.routes';
 import authRoutes from './routes/auth.routes';
 import queryRoutes from './routes/query.routes';
 import testRoutes from './routes/test.routes';
 import userRoutes from './routes/users.routes';
+import views from './routes/views.routes';
+
 const app: Application = express();
 
 // Middleware
@@ -20,17 +23,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/query', queryRoutes);
 app.use('/api/test', testRoutes);
 app.use('/api', userRoutes);
-// Root endpoint
-app.get('/', (_req, res) => {
-  res.json({
-    message: 'Portfolio Dashboard API',
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      auth: '/api/auth',
-    },
-  });
-});
+app.use('/', views.routes);
 
 // Initialize database and start server
 const PORT = config.port;

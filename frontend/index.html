@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users & Queries Table View</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #999;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h2 {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Users & Queries Data</h1>
+
+    <!-- Users Table -->
+    <h2>Users</h2>
+    <table id="usersTable">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Queries Table -->
+    <h2>Queries</h2>
+    <table id="queriesTable">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        // Function to fetch data from the API
+        async function fetchData() {
+            try {
+                const response = await fetch('http://localhost:3000/api/users');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Function to render table data
+        async function renderData() {
+            const response = await fetchData();
+
+            const users = response?.users || [];
+            const queries = response?.querys || [];
+
+            const usersTableBody = document.querySelector('#usersTable tbody');
+            const queriesTableBody = document.querySelector('#queriesTable tbody');
+
+            // Render Users
+            users.forEach(user => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                `;
+
+                usersTableBody.appendChild(row);
+            });
+
+            // Render Queries
+            queries.forEach(query => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td>${query.username}</td>
+                    <td>${query.msg}</td>
+                `;
+
+                queriesTableBody.appendChild(row);
+            });
+        }
+
+        // Call the function
+        renderData();
+    </script>
+</body>
+</html>

@@ -7,22 +7,35 @@ A TypeScript-based REST API built with Express.js following the MVC architecture
 ```
 src/
 ├── config/           # Configuration files
+│   ├── database.ts
 │   └── environment.ts
 ├── controllers/      # Request handlers (Controller layer)
 │   ├── auth.controller.ts
-│   └── health.controller.ts
+│   ├── health.controller.ts
+│   ├── query.controller.ts
+│   ├── users.controller.ts
+│   └── views.controller.ts
 ├── middlewares/      # Express middlewares
-│   └── auth.middleware.ts
+│   └── authmiddleware.ts
 ├── models/          # Data models (Model layer)
-│   └── user.model.ts
-├── routes/          # API routes
+│   ├── auth.model.ts
+│   └── query.model.ts
+├── routes/          # API routes (Route layer)
 │   ├── auth.routes.ts
-│   └── health.routes.ts
+│   ├── health.routes.ts
+│   ├── query.routes.ts
+│   ├── test.routes.ts
+│   └── users.routes.ts
 ├── services/        # Business logic (Service layer)
 │   ├── auth.service.ts
-│   └── user.service.ts
+│   ├── health.service.ts
+│   ├── query.service.ts
+│   └── users.service.ts
 ├── types/           # TypeScript type definitions
 │   └── index.ts
+├── views/           # HTML views (View layer)
+│   ├── login.views.ts
+│   └── register.views.ts
 └── server.ts        # Application entry point
 ```
 
@@ -31,10 +44,35 @@ src/
 This project follows the **MVC (Model-View-Controller)** pattern:
 
 - **Models** (`src/models/`): Handle data structure and database operations
+  - `auth.model.ts` - User data persistence, password hashing, database queries
+  - `query.model.ts` - Query-related data operations
+
+- **Views** (`src/views/`): Handle presentation layer (HTML pages)
+  - `login.views.ts` - Login page UI
+  - `register.views.ts` - Registration page UI
+
 - **Controllers** (`src/controllers/`): Handle HTTP requests and responses
+  - `auth.controller.ts` - Authentication API endpoints (POST)
+  - `views.controller.ts` - Page rendering (GET)
+  - `health.controller.ts` - Health check endpoints
+  - `query.controller.ts` - Query management
+  - `users.controller.ts` - User management
+
 - **Services** (`src/services/`): Contain business logic (acts as the intermediary)
-- **Routes** (`src/routes/`): Define API endpoints
+  - `auth.service.ts` - Authentication business logic
+  - `health.service.ts` - Health monitoring logic
+  - `query.service.ts` - Query processing logic
+  - `users.service.ts` - User management logic
+
+- **Routes** (`src/routes/`): Define API endpoints and map to controllers
+  - `auth.routes.ts` - Authentication routes (both view and API)
+  - `health.routes.ts` - Health check routes
+  - `query.routes.ts` - Query routes
+  - `users.routes.ts` - User routes
+  - `test.routes.ts` - Test routes
+
 - **Middlewares** (`src/middlewares/`): Handle authentication, validation, etc.
+  - `authmiddleware.ts` - JWT authentication middleware
 
 ## 🚀 Getting Started
 
@@ -120,51 +158,87 @@ Simple ping endpoint for basic connectivity check
 
 ### Authentication
 
-#### POST `/api/auth/register`
+#### 🎨 View Routes (HTML Pages)
+
+##### GET `/api/auth/login`
+Render the login page
+
+**Access:** Public  
+**Returns:** HTML login page with form
+
+##### GET `/api/auth/register`
+Render the registration page
+
+**Access:** Public  
+**Returns:** HTML registration page with form
+
+#### 🔌 API Routes (JSON Endpoints)
+
+##### POST `/api/auth/register`
 Register a new user
 
 **Request Body:**
 ```json
 {
-  "email": "user@example.com",
-  "password": "password123",
-  "name": "John Doe"
-}
-```
-
-#### POST `/api/auth/login`
-Login user
-
-**Request Body:**
-```json
-{
+  "username": "johndoe",
   "email": "user@example.com",
   "password": "password123"
 }
 ```
 
-**Response:**
+**Response (Success):**
 ```json
 {
   "success": true,
-  "message": "Login successful",
-  "data": {
-    "user": {
-      "id": "user_123",
-      "email": "user@example.com",
-      "name": "John Doe"
-    },
-    "token": "token_..."
+  "message": "User registered successfully",
+  "user": {
+    "id": 1,
+    "username": "johndoe",
+    "email": "user@example.com",
+    "created_at": "2025-11-25T10:30:00.000Z"
   }
 }
 ```
 
-#### GET `/api/auth/me`
-Get current user profile (Protected)
-
-**Headers:**
+**Response (Error):**
+```json
+{
+  "success": false,
+  "message": "Username already exists"
+}
 ```
-Authorization: Bearer <token>
+
+##### POST `/api/auth/login`
+Login user
+
+**Request Body:**
+```json
+{
+  "username": "johndoe",
+  "password": "password123"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "user": {
+    "id": 1,
+    "username": "johndoe",
+    "email": "user@example.com",
+    "last_login": "2025-11-25T10:30:00.000Z"
+  }
+}
+```
+
+**Response (Error):**
+```json
+{
+  "success": false,
+  "message": "Invalid username or password"
+}
 ```
 
 ## 🛠️ Technologies Used
@@ -196,13 +270,18 @@ DATABASE_URL=mongodb://localhost:27017/portfolio
 ## 📦 Project Features
 
 - ✅ TypeScript for type safety
-- ✅ MVC architecture pattern
-- ✅ Health check endpoint
-- ✅ Authentication system (register, login)
-- ✅ JWT middleware
+- ✅ **Complete MVC architecture pattern** with Views layer
+- ✅ **Beautiful Login & Registration Pages** with modern UI
+- ✅ Health check endpoints
+- ✅ **Full authentication system** (register, login with UI)
+- ✅ Password hashing with bcrypt
+- ✅ PostgreSQL database integration
 - ✅ RESTful API design
-- ✅ Error handling
-- ✅ Environment configuration
+- ✅ Error handling and validation
+- ✅ Environment-based configuration
+- ✅ Responsive HTML views with CSS styling
+- ✅ Client-side form validation
+- ✅ Loading states and user feedback
 
 ## 🏆 Best Practices
 

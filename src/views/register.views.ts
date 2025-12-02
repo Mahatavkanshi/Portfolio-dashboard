@@ -1,10 +1,10 @@
-export const loginPage = `
+export const registerPage = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Portfolio Dashboard</title>
+    <title>Register - Portfolio Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,7 @@ export const loginPage = `
             padding: 20px;
         }
 
-        .login-container {
+        .register-container {
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -31,24 +31,24 @@ export const loginPage = `
             width: 100%;
         }
 
-        .login-header {
+        .register-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 40px 30px;
             text-align: center;
             color: white;
         }
 
-        .login-header h1 {
+        .register-header h1 {
             font-size: 28px;
             margin-bottom: 10px;
         }
 
-        .login-header p {
+        .register-header p {
             font-size: 14px;
             opacity: 0.9;
         }
 
-        .login-form {
+        .register-form {
             padding: 40px 30px;
         }
 
@@ -79,7 +79,7 @@ export const loginPage = `
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .btn-login {
+        .btn-register {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -92,16 +92,16 @@ export const loginPage = `
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .btn-login:hover {
+        .btn-register:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .btn-login:active {
+        .btn-register:active {
             transform: translateY(0);
         }
 
-        .btn-login:disabled {
+        .btn-register:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
@@ -128,20 +128,20 @@ export const loginPage = `
             border: 1px solid #f5c6cb;
         }
 
-        .register-link {
+        .login-link {
             text-align: center;
             margin-top: 20px;
             font-size: 14px;
             color: #666;
         }
 
-        .register-link a {
+        .login-link a {
             color: #667eea;
             text-decoration: none;
             font-weight: 600;
         }
 
-        .register-link a:hover {
+        .login-link a:hover {
             text-decoration: underline;
         }
 
@@ -162,21 +162,33 @@ export const loginPage = `
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <h1>Welcome Back</h1>
-            <p>Login to your Portfolio Dashboard</p>
+    <div class="register-container">
+        <div class="register-header">
+            <h1>Create Account</h1>
+            <p>Register for Portfolio Dashboard</p>
         </div>
-        <form class="login-form" id="loginForm">
+        <form class="register-form" id="registerForm">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input 
                     type="text" 
                     id="username" 
                     name="username" 
-                    placeholder="Enter your username"
+                    placeholder="Choose a username"
                     required
                     autocomplete="username"
+                    minlength="3"
+                >
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Enter your email"
+                    required
+                    autocomplete="email"
                 >
             </div>
             <div class="form-group">
@@ -185,70 +197,66 @@ export const loginPage = `
                     type="password" 
                     id="password" 
                     name="password" 
-                    placeholder="Enter your password"
+                    placeholder="Create a password"
                     required
-                    autocomplete="current-password"
+                    autocomplete="new-password"
+                    minlength="6"
                 >
             </div>
-            <button type="submit" class="btn-login" id="loginBtn">
-                Login
+            <button type="submit" class="btn-register" id="registerBtn">
+                Register
             </button>
             <div class="message" id="message"></div>
-            <div class="register-link">
-                Don't have an account? <a href="/register">Register here</a>
+            <div class="login-link">
+                Already have an account? <a href="/login">Login here</a>
             </div>
         </form>
     </div>
 
     <script>
-        const loginForm = document.getElementById('loginForm');
-        const loginBtn = document.getElementById('loginBtn');
+        const registerForm = document.getElementById('registerForm');
+        const registerBtn = document.getElementById('registerBtn');
         const messageDiv = document.getElementById('message');
 
-        loginForm.addEventListener('submit', async (e) => {
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
             // Disable button and show loading
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<span class="loading"></span>Logging in...';
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<span class="loading"></span>Registering...';
             messageDiv.style.display = 'none';
 
             try {
-                const response = await fetch('/api/auth/login', {
+                const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ username, password }),
+                    body: JSON.stringify({ username, email, password }),
                 });
 
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    // Store token in localStorage
-                    if (data.token) {
-                        localStorage.setItem('authToken', data.token);
-                    }
+                    showMessage('Registration successful! Redirecting to login...', 'success');
 
-                    // Show success message
-                    showMessage('Login successful! Redirecting...', 'success');
-
-                    // Redirect after a short delay
+                    // Redirect to login after a short delay
                     setTimeout(() => {
-                        window.location.href = '/dashboard';
+                        window.location.href = '/api/auth/login';
                     }, 1500);
                 } else {
-                    showMessage(data.message || 'Login failed. Please try again.', 'error');
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = 'Login';
+                    showMessage(data.message || 'Registration failed. Please try again.', 'error');
+                    registerBtn.disabled = false;
+                    registerBtn.innerHTML = 'Register';
                 }
             } catch (error) {
                 showMessage('Network error. Please check your connection.', 'error');
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = 'Login';
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = 'Register';
             }
         });
 

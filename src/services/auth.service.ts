@@ -1,7 +1,21 @@
 import { AuthModel, CreateUserInput, LoginInput } from '../models/auth.model';
 
+/**
+ * AuthService - Business logic layer for authentication
+ * Following MVC architecture pattern
+ * 
+ * Responsibilities:
+ * - Implement business logic
+ * - Coordinate between controllers and models
+ * - Handle data validation and processing
+ */
 export class AuthService {
-  // Register a new user
+  /**
+   * Register a new user
+   * @param userData - User registration data (username, email, password)
+   * @returns Success response with user data
+   * @throws Error if username or email already exists
+   */
   static async register(userData: CreateUserInput) {
     try {
       // Check if username already exists
@@ -34,7 +48,12 @@ export class AuthService {
     }
   }
 
-  // Login user
+  /**
+   * Authenticate user login
+   * @param loginData - User login credentials (username, password)
+   * @returns Success response with user data
+   * @throws Error if credentials are invalid
+   */
   static async login(loginData: LoginInput) {
     try {
       const { username, password } = loginData;
